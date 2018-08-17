@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="jp">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="{% static 'common/base.css' %}" />
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="https://code.highcharts.com/highcharts.src.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js"></script>
+        <script type="text/javascript" src="{% static 'common/djangoAjax.js' %}"></script>
+        {% block extra_static %}{% endblock %}
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div id="header">
+                {% block header %}{% endblock %}
+            </div>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <a class="navbar-brand" href="{% url 'index' %}">@がじゅまる</a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="ナビゲーションの切替">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse mr-auto">
+                    <div class="navbar-nav">
+                        <a class="nav-item nav-link" href="{% url 'transaction_management:historical_data_list' %}">Historical Data</a>
+                    </div>
+                    <div class="navbar-nav">
+                        <a class="nav-item nav-link" href="{% url 'transaction_management:tran_log_list' %}">Tran Log</a>
+                    </div>
+                    <!--<div class="navbar-nav">-->
+                    <!--<a class="nav-item nav-link" href="">バックテスト</a>-->
+                    <!--</div>-->
+                </div>
+                <div class="collapse navbar-collapse ">
+                    <div class="navbar-nav" style="text-align: right; display: block">
+                    <a class="nav-item nav-link" href="">Logged Out</a>
+                    </div>
+                </div>
+            </nav>
+            <div id="content">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </body>
+</html>

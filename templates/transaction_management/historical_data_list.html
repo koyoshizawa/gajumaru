@@ -1,0 +1,40 @@
+{% extends 'common/base.html' %}
+
+{% block title %}{{ title }}{%endblock%}
+
+{% block extra_static %}
+{% load static %}
+<script type="text/javascript" src="{% static 'transaction_management/historical_data_list.js' %}"></script>
+{%endblock%}
+
+{% block content %}
+<div>
+    <select name="product_name" id="product_name">
+        <option value="1">NikkeiMiniFuture</option>
+    </select>
+    <input type="date" name="start_date" id="start_date" value="2017-01-01"/>
+    <input type="date" name="end_date" id="end_date" value="2018-10-01"/>
+    <button class="btn btn-primary" id="update_btn">update</button>
+</div>
+<div class="row">
+    <div class="col-sm-5">
+        <table class="table" id="data_table">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Date Time</th>
+                    <th>Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-sm-7">
+        <canvas id="canvas" ></canvas>
+    </div>
+</div>
+
+{% endblock %}
