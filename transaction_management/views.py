@@ -1,6 +1,5 @@
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.views.generic import ListView
 from .models import HistoricalRate, TranLog
 from lib.converter import str_date_to_datetime_01
 
@@ -18,7 +17,6 @@ def historical_data_list(request):
     時系列データを表示
     """
     template_name = 'transaction_management/historical_data_list.html'
-    model = HistoricalRate
 
     # ajaxの場合は、フィルター条件に適うデータをJSONで返す
     if request.is_ajax():
@@ -42,36 +40,35 @@ def historical_data_list(request):
         return render(request, template_name, info)
 
 
-class TradeLogList(ListView):
+def tran_log_list(request):
     """
     取引履歴を表示
     """
-    template_name = 'transaction_management/trade_log_list.html'
-    paginate_by = 30
-    model = TranLog
+    template_name = 'transaction_management/tran_log_list.html'
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        # 始めに継承元のメソッドを呼び出す
-        context = super().get_context_data(**kwargs)
-        # templateへ渡すデータを整形
-        context['info'] = {
-            'title': '取引履歴',
-            'start_date': self.request.POST['start_date'] if 'start_date' in self.request.POST.keys()
-                                                          else '2017-01-01',
-            'end_date': self.request.POST['end_date'] if 'end_date' in self.request.POST.keys()
-                                                          else '2018-12-31',
-        }
-        return context
+    # ajaxの場合は、フィルター条件に適うデータをJSONで返す
+    if request.is_ajax():
 
-    def get_queryset(self):
+        # パラメータ取得
+        start_date = str_date_to_datetime_01(request.GET.get("start_date"))
+        end_date = str_date_to_datetime_01(request.GET.get('end_date'))
+        product_name = int(request.GET.get('product_name'))
 
-        q_start_date = self.request.POST['start-date'] if 'start-date' in self.request.POST.keys() else '2017-01-01'
-        q_end_date = self.request.POST['end-date'] if 'end-date' in self.request.POST.keys() else '2018-12-31'
+        # 取得パラメータでフィルター
+        query_set = TranLog.objects.filter(datetime__range=(start_date, end_date), product_name=product_name)
 
-        # 日付型へ変換
-        q_start_date = str_date_to_datetime_01(q_start_date)
-        q_end_date = str_date_to_datetime_01(q_end_date)
+        # データ整形
+        data_set = [{'product_name':q.product_name,
+                     'date_time': q.datetime,
+                     'rate': q.current_rate,
+                     'status': q.current_status,
+                     'position': q.current_position,
+                     'profit_loss': q.profit_loss,
+                     'has_trade': q.has_trade,
+                     } for q in query_set]
 
-        results = self.model.objects.filter(datetime__range=[q_start_date, q_end_date])
-        return results
+        return JsonResponse({'data_set': data_set})
 
+    else:
+        info = {'title': '取引履歴'}
+        return render(request, template_name, info)
